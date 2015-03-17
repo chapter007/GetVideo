@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GetVideo</string>
+    <string name="get_video">现在就可以轻松获得你喜欢的视频了</string>
+    <string name="action_settings">设置</string>
+    <string name="youku">优酷</string>
+    <string name="tudou">土豆</string>
+    <string name="ku6">酷6</string>
+
+</resources>

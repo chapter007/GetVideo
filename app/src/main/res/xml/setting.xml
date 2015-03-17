@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="一般设置">
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="quality"
+            android:summaryOff="能看就好（标清画质）"
+            android:summaryOn="渣画质不能忍(慎选！高画质很大)"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="append"
+            android:summaryOff="合并后保留原始文件夹"
+            android:summaryOn="合并后删掉源文件"/>
+    </PreferenceCategory>
+</PreferenceScreen>
