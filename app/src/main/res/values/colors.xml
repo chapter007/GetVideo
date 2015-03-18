@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Theme colors -->
-    <color name="blue">#2979FF</color>
-    <color name="red">#FF0000</color>
-    <color name="red_dark">#B22222</color>
-    <color name="grey">#F0F0F0</color>
-</resources>
