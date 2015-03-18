@@ -122,7 +122,6 @@ public class VideoSite extends ToolBar{
         @Override
         protected void onPreExecute() {
             progressDialog=ProgressDialog.show(VideoSite.this,"正在解析地址","请稍等");
-            progressDialog.setCancelable(true);
             Log.i("onpreexecute","做准备");
             super.onPreExecute();
         }
