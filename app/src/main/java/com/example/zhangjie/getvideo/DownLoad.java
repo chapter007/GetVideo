@@ -178,7 +178,7 @@ public class DownLoad extends ToolBar{
         request.setMimeType(mimeString);
         //通知栏通知
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setVisibleInDownloadsUi(false);
+        request.setVisibleInDownloadsUi(true);
         //sdcard的download
         if (url_list.size()>1){
             String videos_name=video_name.replaceAll("\\s","_");
