@@ -1,4 +1,4 @@
-package com.example.zhangjie.getvideo;
+package com.zhangjie.getvideo;
 
 import android.util.Log;
 
@@ -58,8 +58,8 @@ public class ParseUrl {
         Pattern pattern=Pattern.compile("\\s+<strong>\\w+.+?<strong>");
         Matcher matcher=pattern.matcher(Result);
         if (matcher.find()){
-            VideoName=matcher.group().replaceAll("<strong>|</strong>","");
-            Log.i("videoname", VideoName);
+            VideoName=matcher.group().replaceAll("<strong>|</strong>|\\s|当前解析视频：","");
+            Log.i("VideoName", VideoName);
         }
         return VideoName;
     }
@@ -88,25 +88,5 @@ public class ParseUrl {
         return null;
     }
 
-    /*public void getFileFromBytes(String name,String path) {
-        byte[] b=name.getBytes();
-        BufferedOutputStream stream = null;
-        File file = null;
-        try {
-            file = new File(path);
-            FileOutputStream fstream = new FileOutputStream(file);
-            stream = new BufferedOutputStream(fstream);
-            stream.write(b);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        }
-    }*/
+
 }

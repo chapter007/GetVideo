@@ -6,40 +6,11 @@
 
     <include layout="@layout/toolbar"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="感觉这个页面没什么用，先不做了"
-            android:textSize="30sp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="0.要看下载进度就在通知栏里看好了"
-            android:textSize="20sp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="1.调用的是系统自带的下载器，各种系统可能略有差异，应该是不能断点不能暂停的(不要用流量下载~)，后期会改"
-            android:textSize="20sp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="2.如果想停止下载，请到系统自带的下载管理器里关闭下载（好像比较难以停止），停不下来就等他下完删除吧···"
-            android:textSize="20sp"/>
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/video_download">
-
-        </ListView>
-        </LinearLayout>
-
+    <ListView
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/download_list">
+    </ListView>
 
 </LinearLayout>

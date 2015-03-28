@@ -1,4 +1,4 @@
-package Fragment;
+package com.zhangjie.fragment;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -9,8 +9,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,7 +23,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.example.zhangjie.getvideo.R;
+import com.zhangjie.getvideo.R;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,10 +40,8 @@ import java.util.Map;
  * Created by zhangjie on 2015/2/11.
  */
 public class VideoExplore extends Fragment{
-    private ListView videos;
     private List<Map<String,Object>> data=new ArrayList<>();
     private String path= Environment.getExternalStorageDirectory().getAbsolutePath()+"/VideoGet";
-    private SharedPreferences preferences;
     private boolean deletefile;
     private SimpleAdapter adapter;
     File videoGet=new File(path);
@@ -54,13 +50,13 @@ public class VideoExplore extends Fragment{
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.video_explore,container,false);
-        videos= (ListView) v.findViewById(R.id.videos);
+        ListView videos = (ListView) v.findViewById(R.id.videos);
         final Button back=new Button(getActivity());
         back.setText("返回上一层");
         hideFooter(back);
         initData();
-        preferences= PreferenceManager.getDefaultSharedPreferences(getActivity());
-        deletefile=preferences.getBoolean("append",false);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        deletefile= preferences.getBoolean("append", false);
         Log.i("data",""+data);
         adapter=new SimpleAdapter(getActivity(),data,R.layout.video_items,
                 new String[]{"video_pre","video_single_name","video_info"},
@@ -86,21 +82,21 @@ public class VideoExplore extends Fragment{
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long l) {
                 final File[] Lvideos = videoGet.listFiles();
-                AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-                final AlertDialog dialog=builder.create();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                final AlertDialog dialog = builder.create();
                 dialog.setTitle("选择操作");
-                LayoutInflater layoutInflater=LayoutInflater.from(getActivity());
-                LinearLayout linearLayout= (LinearLayout) layoutInflater.inflate(R.layout.choose_dialog,null);
-                final ListView choose= (ListView) linearLayout.findViewById(R.id.choose);
-                String[] choose_item=new String[]{"删除","合并"};
+                LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+                LinearLayout linearLayout = (LinearLayout) layoutInflater.inflate(R.layout.choose_dialog, null);
+                final ListView choose = (ListView) linearLayout.findViewById(R.id.choose);
+                String[] choose_item = new String[]{"删除", "合并"};
                 choose.setAdapter(new ArrayAdapter<>(getActivity(),
-                        android.R.layout.simple_list_item_1,choose_item));
-                 if (Lvideos[position].isDirectory()) {
+                        android.R.layout.simple_list_item_1, choose_item));
+                if (Lvideos[position].isDirectory()) {
                     dialog.setView(linearLayout);
                     choose.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            switch (i){
+                            switch (i) {
                                 case 0:
                                     deleteFiles(Lvideos[position]);
                                     inflateFloder(videoGet.listFiles());
@@ -108,15 +104,14 @@ public class VideoExplore extends Fragment{
                                     dialog.dismiss();
                                     break;
                                 case 1:
-                                    File[] temp=Lvideos[position].listFiles();
+                                    File[] temp = Lvideos[position].listFiles();
                                     String[] _videos = new String[temp.length];
-                                    _path=Lvideos[position].getPath();
-                                    Log.i("合并-1",""+temp.length);
-                                    for (int v=0;v<temp.length;v++){
-                                        _videos[v]= temp[v].getPath();
+                                    _path = Lvideos[position].getPath();
+                                    Log.i("合并-1", "" + temp.length);
+                                    for (int v = 0; v < temp.length; v++) {
+                                        _videos[v] = temp[v].getPath();
                                     }
                                     new appendTask().execute(_videos);
-
                                     dialog.dismiss();
                                     break;
                             }
@@ -126,23 +121,23 @@ public class VideoExplore extends Fragment{
                     dialog.show();
 
                 } else if (Lvideos[position].isFile()) {
-                    dialog.setButton(DialogInterface.BUTTON_POSITIVE,"删除",
+                    dialog.setButton(DialogInterface.BUTTON_POSITIVE, "删除",
                             new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Lvideos[position].delete();
-                            inflateFloder(videoGet.listFiles());
-                            adapter.notifyDataSetChanged();
-                        }
-                    });
-                   dialog.setButton(DialogInterface.BUTTON_NEGATIVE,"取消",
-                           new DialogInterface.OnClickListener() {
-                               @Override
-                               public void onClick(DialogInterface dialogInterface, int i) {
-                                   dialog.dismiss();
-                               }
-                           });
-                   dialog.show();
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Lvideos[position].delete();
+                                    inflateFloder(videoGet.listFiles());
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                    dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    dialog.show();
 
                 }
                 return true;
@@ -295,7 +290,6 @@ public class VideoExplore extends Fragment{
             file.delete();
         }
         file.delete();
-
     }
 
 }

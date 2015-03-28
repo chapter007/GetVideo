@@ -1,13 +1,11 @@
-package com.example.zhangjie.getvideo;
+package com.zhangjie.getvideo;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -19,29 +17,16 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import com.zhangjie.getvideo.ToolBar;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by zhangjie on 2015/1/29.
  */
 
-public class VideoSite extends ToolBar{
+public class VideoSite extends ToolBar {
 
     private String url;
     private String VideoName;
@@ -122,15 +107,13 @@ public class VideoSite extends ToolBar{
         @Override
         protected void onPreExecute() {
             progressDialog=ProgressDialog.show(VideoSite.this,"正在解析地址","请稍等");
-            progressDialog.setCancelable(true);
-            Log.i("onpreexecute","做准备");
             super.onPreExecute();
         }
 
         int[] flag=new int[3];
         @Override
         protected String doInBackground(String... strings) {
-            Log.i("doinbackground","正在解析链接"+strings[0]);
+            Log.i("doInBackground","正在解析链接"+strings[0]);
             ParseUrl mParseUrl = new ParseUrl();
             String[] result = new String[3];
             result[0]=mParseUrl.parseUrl(strings[0]);
@@ -160,7 +143,7 @@ public class VideoSite extends ToolBar{
 
         @Override
         protected void onPostExecute(String s) {
-            Log.i("onpostexecute","结束了");
+            Log.i("onPostExecute","结束了");
             progressDialog.dismiss();
             progressDialog=null;
             if (downloadUrl.size()==0) {
@@ -172,7 +155,7 @@ public class VideoSite extends ToolBar{
                 Intent intent=new Intent(VideoSite.this,DownLoad.class);
                 Bundle bundle=new Bundle();
                 bundle.putStringArrayList("list",downloadUrl);
-                bundle.putString("videoname", VideoName);
+                bundle.putString("VideoName", VideoName);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

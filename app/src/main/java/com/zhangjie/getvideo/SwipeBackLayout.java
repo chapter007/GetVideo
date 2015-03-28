@@ -1,4 +1,4 @@
-package com.example.zhangjie.getvideo;
+package com.zhangjie.getvideo;
 
 import android.app.Activity;
 import android.content.Context;
@@ -129,7 +129,7 @@ public class SwipeBackLayout extends FrameLayout {
 			break;
 		case MotionEvent.ACTION_MOVE:
 			int moveX = (int) ev.getRawX();
-			// �������������SildingFinishLayout���������touch�¼�
+
 			if (moveX - downX > mTouchSlop
 					&& Math.abs((int) ev.getRawY() - downY) < mTouchSlop) {
 				return true;
@@ -327,7 +327,6 @@ public class SwipeBackLayout extends FrameLayout {
 
 	@Override
 	public void computeScroll() {
-		// ����startScroll��ʱ��scroller.computeScrollOffset()����true��
 		if (mScroller.computeScrollOffset()) {
 			mContentView.scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
 			postInvalidate();

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.zhangjie.getvideo" >
+    package="com.zhangjie.getvideo" >
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
         android:allowBackup="true"
@@ -31,6 +32,13 @@
         </activity>
         <activity android:name=".Setting"/>
         <activity android:name=".About"/>
+
+        <service android:name="com.zhangjie.downloader.DownloadService" >
+            <intent-filter >
+                <action android:name="com.zhangjie.downloader.IDownloadService" />
+            </intent-filter>
+        </service>
+        <meta-data android:value="95b86c5ebbaffd0d4bf2a47e2fa8935c" android:name="BUG_HD_SDK_GENERAL_KEY" />
     </application>
 
 </manifest>

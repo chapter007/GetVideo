@@ -1,4 +1,4 @@
-package Fragment;
+package com.zhangjie.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,8 +13,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.zhangjie.getvideo.R;
-import com.example.zhangjie.getvideo.VideoSite;
+import com.zhangjie.getvideo.R;
+import com.zhangjie.getvideo.VideoSite;
 
 import java.io.File;
 

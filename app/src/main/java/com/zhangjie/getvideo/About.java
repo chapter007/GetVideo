@@ -1,4 +1,4 @@
-package com.example.zhangjie.getvideo;
+package com.zhangjie.getvideo;
 
 import android.os.Bundle;
 import android.view.MenuItem;

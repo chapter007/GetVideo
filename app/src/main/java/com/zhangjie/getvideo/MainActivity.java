@@ -1,18 +1,20 @@
-package com.example.zhangjie.getvideo;
+package com.zhangjie.getvideo;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,29 +27,26 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import Fragment.MainView;
-import Fragment.VideoExplore;
+import com.zhangjie.fragment.MainView;
+import com.zhangjie.fragment.VideoExplore;
+import im.fir.sdk.FIR;
+import im.fir.sdk.callback.VersionCheckCallback;
+import im.fir.sdk.version.AppVersion;
 
 
 public class MainActivity extends ToolBar {
@@ -62,8 +61,8 @@ public class MainActivity extends ToolBar {
     private ArrayList<String> downloadUrl=new ArrayList<>();
     private SharedPreferences preference;
     private boolean quality;
-    private String VideoName;
-
+    private String VideoName,updateLog;
+    private String Token="95b86c5ebbaffd0d4bf2a47e2fa8935c";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +71,12 @@ public class MainActivity extends ToolBar {
         myMainView=new MainView();
         initDrawer();
         initLayout();
+        try {
+            File f=new File(this.getFilesDir()+"/flvmerge");
+            if (!f.exists()) getAsserts();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         preference=PreferenceManager.getDefaultSharedPreferences(this);
         quality=preference.getBoolean("quality",false);
         mFAB=new FloatingActionButton.Builder(this)
@@ -106,14 +111,107 @@ public class MainActivity extends ToolBar {
         });
 
 
+        //check_update
+        FIR.checkForUpdateInFIR(this,Token,new VersionCheckCallback() {
+            @Override
+            public void onSuccess(AppVersion appVersion, boolean b) {
+                Log.i("AppVersion","versionName:"+appVersion.getVersionName());
+                updateLog=appVersion.getChangeLog();
+                PackageManager pm=MainActivity.this.getPackageManager();
+                try {
+                    PackageInfo pi=pm.getPackageInfo(MainActivity.this.getPackageName(),
+                            PackageManager.GET_ACTIVITIES);
+                    if (pi != null) {
+                        int currentVersionCode = pi.versionCode;
+                        String currentVersionName = pi.versionName;
+                        if (appVersion.getVersionCode() > currentVersionCode) {
+                            //需要更新
+                            Log.i("info_1", "need update");
+                            update();
+                        } else if (appVersion.getVersionCode() == currentVersionCode) {
+                            //如果本地app的versionCode与FIR上的app的versionCode一致，则需要判断versionName.
+                            if (!currentVersionName.equals(appVersion.getVersionName())) {
+                                Log.i("info", "need update");
+                                update();
+                            }
+                        } else {
+                            //不需要更新,当前版本高于FIR上的app版本.
+                            Log.i("info", " no need update");
+                        }
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(MainActivity.this,"当前版本是："+appVersion.getVersionName(),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFail(String s, int i) {
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        });
+
     }
 
+    private void update(){
+        AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog dialog=builder.create();
+        dialog.setTitle("有新版本，是否更新？");
+        TextView update_log=new TextView(MainActivity.this);
+        update_log.setTextSize(20);
+        update_log.setText(updateLog);
+        dialog.setView(update_log);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE,"确定",new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                Uri content_url = Uri.parse("http://fir.im/8gpe");
+                intent.setData(content_url);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void getAsserts() throws IOException {
+        Log.i("asserts","flvmerge build");
+        BufferedInputStream inputStream = new BufferedInputStream( getResources().getAssets().open("flvmerge") );
+        RandomAccessFile file= new RandomAccessFile(this.getFilesDir()+"/flvmerge","rw");
+        byte[] buf=new byte[512];
+        while (true) {
+            int len=inputStream.read(buf,0,512);
+            if (len==-1) {
+                file.close();
+                break;
+            }else {
+                file.write(buf,0,len);
+            }
+        }
+        Runtime.getRuntime().exec("chmod 777 "+this.getFilesDir()+"/flvmerge");
+    }
 
     @Override
     protected int getLayoutResource() {
         return R.layout.drawer;
     }
-
 
     public void getVideo(String url){
         String FLVCD="http://www.flvcd.com/parse.php?format=&kw=";
@@ -122,12 +220,10 @@ public class MainActivity extends ToolBar {
         new VideoParse().execute(FLVCD);
     }
 
-
     public class VideoParse extends AsyncTask<String,Integer,String> {
 
         @Override
         protected void onPreExecute() {
-            AlertDialog.Builder alert=new AlertDialog.Builder(MainActivity.this);
             progressDialog= ProgressDialog.show(MainActivity.this, "正在解析地址", "请稍等");
             progressDialog.setCancelable(true);
             Log.i("onpreexecute","做准备");
@@ -186,7 +282,6 @@ public class MainActivity extends ToolBar {
     }
 
     public void initLayout(){
-        Log.i("back","onInitLayout"+myMainView);
         getSupportFragmentManager().beginTransaction().add(R.id.frame, myMainView)
                 .commit();
     }
@@ -207,6 +302,10 @@ public class MainActivity extends ToolBar {
         map1.put("icon", R.drawable.ic_play_install_black_48dp);
         map1.put("content","已下载");
         data.add(map1);
+        Map<String,Object> map2=new HashMap<>();
+        map2.put("icon", R.drawable.ic_get_app_black_48dp);
+        map2.put("content","正在下载");
+        data.add(map2);
         Log.i("data",""+data);
         SimpleAdapter adapter=new SimpleAdapter(this,data,R.layout.list_layout,
                 new String[]{"icon","content"},new int[]{R.id.Licon,R.id.Lcontent});
@@ -231,6 +330,9 @@ public class MainActivity extends ToolBar {
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .replace(R.id.frame, videoExplore)
                         .commit();
+            }else if (i==2){
+                Intent intent=new Intent(MainActivity.this,DownLoad.class);
+                startActivity(intent);
             }
         }
     }
@@ -240,12 +342,6 @@ public class MainActivity extends ToolBar {
         Log.i("destroy","ok,it is destroy");
         System.exit(0);
         super.onDestroy();
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Log.i("back","onBack");
     }
 
     @Override
@@ -268,8 +364,4 @@ public class MainActivity extends ToolBar {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-
-    }
 }
